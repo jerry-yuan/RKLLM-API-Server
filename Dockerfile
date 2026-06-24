@@ -18,6 +18,8 @@ RUN pip install --upgrade pip && \
 
 # Install RKLLM-API-Server
 COPY ./api.py /app/
+COPY ./gunicorn.config.py /app/
+COPY ./healthcheck.py /app/
 WORKDIR /app
 VOLUME /root/models
 EXPOSE 8000
@@ -28,15 +30,6 @@ ENV GUNICORN_BIND=0.0.0.0:8000
 
 # Configure Healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD python -c "import os, urllib.request, sys; \
-    bind = os.environ.get('GUNICORN_BIND', '0.0.0.0:8000'); \
-    host, port = bind.split(':'); \
-    host = '127.0.0.1' if host == '0.0.0.0' else host; \
-    url = f'http://{host}:{port}/v1/models'; \
-    try: \
-        urllib.request.urlopen(url, timeout=3); \
-        sys.exit(0); \
-    except Exception: \
-        sys.exit(1)"
+  CMD python /app/healthcheck.py
 
 CMD ["gunicorn","-c","gunicorn.config.py","api:app"]
