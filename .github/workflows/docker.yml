@@ -33,7 +33,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable=${{ endsWith(github.ref, '/main') || endsWith(github.ref, '/master') }}
             type=raw,value=${{ github.ref_name }},enable=${{ !endsWith(github.ref, '/main') && !endsWith(github.ref, '/master') }}
