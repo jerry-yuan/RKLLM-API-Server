@@ -281,6 +281,8 @@ docker run -d \
 
 ```
 
+---
+
 ### Manual Installation
 
 <details>
